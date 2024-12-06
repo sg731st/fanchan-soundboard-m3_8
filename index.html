@@ -109,16 +109,14 @@
   <div id="container"></div>
 </body>
 <script>
-  const audiosList = ["เสียงโทรศัพท์ (nokia)", "เสียงมอเตอร์ไซค์", "มวยเปาบุ้นจิ้น", "ใจเธอใจฉัน - 18 กะรัต", "แฟนฉัน - ชาตรี", "รักครั้งแรก - ชาตรี", "ประตูใจ - สาว สาว สาว", "รักคือฝันไป - สาว สาว สาว", "เป็นแฟนกันได้ยังไง - สาว สาว สาว", "น่าอาย - รอยัลสไบรท์", "สายเกินไป - ก้อย พรพิมล ธรรมสาร", "หัวใจสลาย - ฮอทเปปเปอร์", "คอนเสิร์ตคนจน - นกแล", "รักบึงเก่า - กุ้ง ตวงสิทธิ เรียมจินดา และวงเพื่อน", "ป้ากะปู่ กู้อีจู้ - ดาจิม"];
+  const audiosList = ["เสียงโทรศัพท์ (nokia)", "เสียงมอเตอร์ไซค์", "มวยเปาบุ้นจิ้น", "บักจีเหลิน - จีเหลิน สายหมอบ", "ใจเธอใจฉัน - 18 กะรัต", "แฟนฉัน - ชาตรี", "รักครั้งแรก - ชาตรี", "ประตูใจ - สาว สาว สาว", "รักคือฝันไป - สาว สาว สาว", "เป็นแฟนกันได้ยังไง - สาว สาว สาว", "น่าอาย - รอยัลสไบรท์", "สายเกินไป - ก้อย พรพิมล ธรรมสาร", "หัวใจสลาย - ฮอทเปปเปอร์", "คอนเสิร์ตคนจน - นกแล", "รักบึงเก่า - กุ้ง ตวงสิทธิ เรียมจินดา และวงเพื่อน", "ป้ากะปู่ กู้อีจู้ - ดาจิม"];
 
-  // Format time (seconds) into mm:ss
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
   };
 
-  // Create pads dynamically
   audiosList.forEach((a) => {
     const pad = document.createElement("div");
     pad.className = "pad";
@@ -142,7 +140,6 @@
       const audioTitle = document.createElement("p");
       audioTitle.textContent = audioName;
 
-      // Slider for audio progress
       const progressSlider = document.createElement("input");
       progressSlider.type = "range";
       progressSlider.min = 0;
@@ -154,11 +151,9 @@
         audio.currentTime = (progressSlider.value / 100) * duration;
       });
 
-      // Label for volume slider
       const volumeLabel = document.createElement("p");
       volumeLabel.textContent = "ความดังเสียง";
 
-      // Volume slider
       const volumeSlider = document.createElement("input");
       volumeSlider.type = "range";
       volumeSlider.min = 0;
@@ -170,7 +165,6 @@
         audio.volume = volumeSlider.value;
       });
 
-      // Current time and duration display
       const timestamps = document.createElement("p");
       timestamps.textContent = "0:00 / 0:00";
 
@@ -182,11 +176,9 @@
         }
       });
 
-      // Buttons container
       const buttonsDiv = document.createElement("div");
       buttonsDiv.className = "buttonsDiv";
 
-      // Play/Pause button
       const playPauseButton = document.createElement("button");
       playPauseButton.textContent = "⏸️";
 
@@ -200,7 +192,6 @@
         }
       });
 
-      // Delete button
       const deleteButton = document.createElement("button");
       deleteButton.textContent = "ลบ";
 
@@ -209,7 +200,6 @@
         container.removeChild(audioBox);
       });
 
-      // Remove box on audio end
       audio.addEventListener("ended", () => {
         container.removeChild(audioBox);
       });
@@ -225,7 +215,7 @@
       audioBox.appendChild(buttonsDiv);
       container.appendChild(audioBox);
 
-      audio.play(); // Start playing automatically
+      audio.play();
     });
   });
 </script>
