@@ -5,9 +5,24 @@
   <title>Fanchan 3/8 Soundboard</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap');
+
+    @keyframes popOut {
+      0% {
+        scale: 100%;
+        opacity: 100%;
+      }
+      100% {
+        scale: 0%;
+        opacity: 0%;
+      }
+    }
     
     * {
       font-family: "Kanit";
+    }
+
+    .popOut {
+      animation: popOut 250ms;
     }
 
     .pad {
@@ -197,13 +212,19 @@
 
       deleteButton.addEventListener("click", () => {
         audio.pause();
-        container.removeChild(audioBox);
+        audioBox.classList.add("popOut");
+        setTimeout(() => {
+          container.removeChild(audioBox);
+        }, 240);
       });
 
       audio.addEventListener("ended", () => {
-        container.removeChild(audioBox);
+        audioBox.classList.add("popOut");
+        setTimeout(() => {
+          container.removeChild(audioBox);
+        }, 240);
       });
-
+      
       buttonsDiv.appendChild(playPauseButton);
       buttonsDiv.appendChild(deleteButton);
 
