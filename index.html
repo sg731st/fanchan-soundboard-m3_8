@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Fanchan 3/8 Soundboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400&display=swap');
+    
+    * {
+      font-family: "Kanit";
+    }
+
+    .pad {
+      width: 270px;
+      height: 270px;
+      background-color: #5bccff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: 200ms;
+      border: 2px solid black;
+      font-size: 35px;
+      border-radius: 5px;
+    }
+    
+    .pad p {
+      text-align: center;
+      width: 100%;
+    }
+
+    .pad:active {
+      scale: 105%;
+      background-color: #9de0ff;
+    }
+
+    #container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .audioBox {
+      width: 300px;
+      background-color: #c0e9ff;
+      border: 1px solid black;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+
+    .audioBox p {
+      margin: 5px 0;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .audioBox input {
+      width: 100%;
+      margin: 5px 0;
+    }
+
+    .buttonsDiv {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .buttonsDiv button {
+      width: 45%;
+      font-size: 16px;
+      padding: 5px;
+      transition: 250ms;
+    }
+    
+    .buttonsDiv button:active {
+      scale: 110%;
+      background-color: #94d5ff;
+    }
+
+    #pads {
+      display: grid;
+      grid-template-columns: 290px 290px;
+      gap: 30px;
+      margin-left: 20px;
+      margin-top: 20px;
+    }
+    
+    @media (min-width: 992px) {
+      #pads {
+        grid-template-columns: 290px 290px 290px;
+      }
+      .audioBox {
+        width: 450px;
+      }
+      .audioBox p {
+        font-size: 25px;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="pads"></div>
+  <div id="container"></div>
+</body>
+<script>
+  const audiosList = ["เสียงโทรศัพท์ (nokia)", "เสียงมอเตอร์ไซค์", "มวยเปาบุ้นจิ้น", "ใจเธอใจฉัน - 18 กะรัต", "แฟนฉัน - ชาตรี", "รักครั้งแรก - ชาตรี", "ประตูใจ - สาว สาว สาว", "รักคือฝันไป - สาว สาว สาว", "เป็นแฟนกันได้ยังไง - สาว สาว สาว", "น่าอาย - รอยัลสไบรท์", "สายเกินไป - ก้อย พรพิมล ธรรมสาร", "หัวใจสลาย - ฮอทเปปเปอร์", "คอนเสิร์ตคนจน - นกแล", "รักบึงเก่า - กุ้ง ตวงสิทธิ เรียมจินดา และวงเพื่อน", "ป้ากะปู่ กู้อีจู้ - ดาจิม"];
+
+  // Format time (seconds) into mm:ss
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
+  };
+
+  // Create pads dynamically
+  audiosList.forEach((a) => {
+    const pad = document.createElement("div");
+    pad.className = "pad";
+    
+    const text = document.createElement("p");
+    text.textContent = a;
+    
+    pad.appendChild(text);
+    document.getElementById("pads").appendChild(pad);
+  });
+
+  Array.from(document.getElementsByClassName("pad")).forEach((el, index) => {
+    el.addEventListener("click", () => {
+      const audioName = audiosList[index];
+      const audio = new Audio(audioName + ".mp3");
+
+      const container = document.getElementById("container");
+      const audioBox = document.createElement("div");
+      audioBox.className = "audioBox";
+
+      const audioTitle = document.createElement("p");
+      audioTitle.textContent = audioName;
+
+      // Slider for audio progress
+      const progressSlider = document.createElement("input");
+      progressSlider.type = "range";
+      progressSlider.min = 0;
+      progressSlider.max = 100;
+      progressSlider.value = 0;
+
+      progressSlider.addEventListener("input", () => {
+        const duration = audio.duration || 0;
+        audio.currentTime = (progressSlider.value / 100) * duration;
+      });
+
+      // Label for volume slider
+      const volumeLabel = document.createElement("p");
+      volumeLabel.textContent = "ความดังเสียง";
+
+      // Volume slider
+      const volumeSlider = document.createElement("input");
+      volumeSlider.type = "range";
+      volumeSlider.min = 0;
+      volumeSlider.max = 1;
+      volumeSlider.step = 0.01;
+      volumeSlider.value = audio.volume;
+
+      volumeSlider.addEventListener("input", () => {
+        audio.volume = volumeSlider.value;
+      });
+
+      // Current time and duration display
+      const timestamps = document.createElement("p");
+      timestamps.textContent = "0:00 / 0:00";
+
+      audio.addEventListener("timeupdate", () => {
+        timestamps.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration || 0)}`;
+        const duration = audio.duration || 0;
+        if (duration > 0) {
+          progressSlider.value = (audio.currentTime / duration) * 100;
+        }
+      });
+
+      // Buttons container
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.className = "buttonsDiv";
+
+      // Play/Pause button
+      const playPauseButton = document.createElement("button");
+      playPauseButton.textContent = "⏸️";
+
+      playPauseButton.addEventListener("click", () => {
+        if (audio.paused) {
+          audio.play();
+          playPauseButton.textContent = "⏸️";
+        } else {
+          audio.pause();
+          playPauseButton.textContent = "▶️";
+        }
+      });
+
+      // Delete button
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "ลบ";
+
+      deleteButton.addEventListener("click", () => {
+        audio.pause();
+        container.removeChild(audioBox);
+      });
+
+      // Remove box on audio end
+      audio.addEventListener("ended", () => {
+        container.removeChild(audioBox);
+      });
+
+      buttonsDiv.appendChild(playPauseButton);
+      buttonsDiv.appendChild(deleteButton);
+
+      audioBox.appendChild(audioTitle);
+      audioBox.appendChild(progressSlider);
+      audioBox.appendChild(timestamps);
+      audioBox.appendChild(volumeLabel);
+      audioBox.appendChild(volumeSlider);
+      audioBox.appendChild(buttonsDiv);
+      container.appendChild(audioBox);
+
+      audio.play(); // Start playing automatically
+    });
+  });
+</script>
+</html>
