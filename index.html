@@ -146,7 +146,13 @@
   Array.from(document.getElementsByClassName("pad")).forEach((el, index) => {
     el.addEventListener("click", () => {
       const audioName = audiosList[index];
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 1;
+
       const audio = new Audio(audioName + ".mp3");
+      const source = audioContext.createMediaElementSource(audio);
+      source.connect(gainNode).connect(audioContext.destination);
 
       const container = document.getElementById("container");
       const audioBox = document.createElement("div");
@@ -172,12 +178,12 @@
       const volumeSlider = document.createElement("input");
       volumeSlider.type = "range";
       volumeSlider.min = 0;
-      volumeSlider.max = 1;
+      volumeSlider.max = 2; // Volume up to 200%
       volumeSlider.step = 0.01;
-      volumeSlider.value = audio.volume;
+      volumeSlider.value = 1;
 
       volumeSlider.addEventListener("input", () => {
-        audio.volume = volumeSlider.value;
+        gainNode.gain.value = volumeSlider.value;
       });
 
       const timestamps = document.createElement("p");
@@ -197,8 +203,9 @@
       const playPauseButton = document.createElement("button");
       playPauseButton.textContent = "⏸️";
 
-      playPauseButton.addEventListener("click", () => {
+      playPauseButton.addEventListener("click", async () => {
         if (audio.paused) {
+          await audioContext.resume();
           audio.play();
           playPauseButton.textContent = "⏸️";
         } else {
@@ -224,7 +231,7 @@
           container.removeChild(audioBox);
         }, 240);
       });
-      
+
       buttonsDiv.appendChild(playPauseButton);
       buttonsDiv.appendChild(deleteButton);
 
