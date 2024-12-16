@@ -30,6 +30,7 @@
       height: 270px;
       background-color: #5bccff;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       transition: 200ms;
@@ -39,8 +40,19 @@
     }
     
     .pad p {
+      margin: 0;
       text-align: center;
       width: 100%;
+    }
+    
+    .pad > p {
+      font-size: 35px;
+    }
+
+    .pad .subtitle {
+      font-size: 25px;
+      color: #005c97;
+      margin-top: 5px;
     }
 
     .pad:active {
@@ -70,7 +82,7 @@
 
     .audioBox p {
       margin: 5px 0;
-      font-size: 20px;
+      font-size: 25px;
       text-align: center;
     }
 
@@ -82,12 +94,14 @@
     .buttonsDiv {
       display: flex;
       justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
       width: 100%;
     }
 
     .buttonsDiv button {
-      width: 45%;
-      font-size: 16px;
+      flex: 1;
+      font-size: 25px;
       padding: 5px;
       transition: 250ms;
     }
@@ -116,7 +130,6 @@
         font-size: 25px;
       }
     }
-
   </style>
 </head>
 <body>
@@ -124,7 +137,7 @@
   <div id="container"></div>
 </body>
 <script>
-  const audiosList = ["เสียงปิ๊ง (ก่อนพูดแนะนำตัวละคร)", "เสียงโทรศัพท์ (nokia)", "เสียงมอเตอร์ไซค์", "มวยเปาบุ้นจิ้น", "บักจีเหลิน - จีเหลิน สายหมอบ", "ใจเธอใจฉัน - 18 กะรัต", "แฟนฉัน - ชาตรี", "รักครั้งแรก - ชาตรี", "ประตูใจ - สาว สาว สาว", "รักคือฝันไป - สาว สาว สาว", "เป็นแฟนกันได้ยังไง - สาว สาว สาว", "น่าอาย - รอยัลสไบรท์", "สายเกินไป - ก้อย พรพิมล ธรรมสาร", "หัวใจสลาย - ฮอทเปปเปอร์", "คอนเสิร์ตคนจน - นกแล (เพลงโอ้เย้)", "รักบึงเก่า - กุ้ง ตวงสิทธิ เรียมจินดา และวงเพื่อน", "ป้ากะปู่ กู้อีจู้ - ดาจิม", "Catch Me - toephak (เจี๊ยบหายาง)", "รักไม่รู้ดับ - สุชาติ ชวางกูร (เจี๋ยบเป่ายางบนเตียงคนเดียว) [เพลง]", "wave to earth - seasons (งานแต่ง) [เพลง]"];
+  const audiosList = ["เสียงปิ๊ง, ก่อนพูดแนะนำตัวละคร", "เสียงโทรศัพท์, nokia", "เสียงมอเตอร์ไซค์", "เปาบุ้นจิ้น", "บักจีเหลิน - จีเหลิน สายหมอบ, เพลงงานวันเด็กพวกผู้ชาย", "ใจเธอใจฉัน - 18 กะรัต, เพลงเปลี่ยนฉาก", "แฟนฉัน - ชาตรี", "รักครั้งแรก - ชาตรี", "ประตูใจ - สาว สาว สาว, ตอนแม่เจี๊ยบเปิดประตู", "รักคือฝันไป - สาว สาว สาว, เพลงงานเด็กพวกผู้หญิง", "เป็นแฟนกันได้ยังไง - สาว สาว สาว", "น่าอาย - รอยัลสไบรท์", "สายเกินไป - ก้อย พรพิมล ธรรมสาร", "หัวใจสลาย - ฮอทเปปเปอร์", "คอนเสิร์ตคนจน - นกแล, เพลงโอ้เย้ๆ", "รักบึงเก่า - กุ้ง ตวงสิทธิ เรียมจินดา และวงเพื่อน", "ป้ากะปู่ กู้อีจู้ - ดาจิม", "Catch Me - toephak, เจี๊ยบหายาง", "รักไม่รู้ดับ - สุชาติ ชวางกูร [เพลง], เจี๋ยบเป่ายางบนเตียงคนเดียว", "wave to earth - seasons [เพลง], เพลงตอนงานแต่ง"];
 
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
@@ -132,20 +145,26 @@
     return `${minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
   };
 
-  audiosList.forEach((a) => {
+  audiosList.forEach((audioItem) => {
     const pad = document.createElement("div");
     pad.className = "pad";
-    
-    const text = document.createElement("p");
-    text.textContent = a;
-    
-    pad.appendChild(text);
+
+    const title = document.createElement("p");
+    title.textContent = audioItem.split(", ")[0];
+
+    const subtitle = document.createElement("p");
+    subtitle.textContent = audioItem.split(", ")[1];
+    subtitle.className = "subtitle";
+
+    pad.appendChild(title);
+    pad.appendChild(subtitle);
     document.getElementById("pads").appendChild(pad);
   });
 
   Array.from(document.getElementsByClassName("pad")).forEach((el, index) => {
     el.addEventListener("click", () => {
-      const audioName = audiosList[index];
+      const audioName = audiosList[index].split(", ")[0];
+      console.log(audioName)
       const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const gainNode = audioContext.createGain();
       gainNode.gain.value = 1;
@@ -178,7 +197,7 @@
       const volumeSlider = document.createElement("input");
       volumeSlider.type = "range";
       volumeSlider.min = 0;
-      volumeSlider.max = 2; // Volume up to 200%
+      volumeSlider.max = 2;
       volumeSlider.step = 0.01;
       volumeSlider.value = 1;
 
@@ -214,6 +233,14 @@
         }
       });
 
+      const loopButton = document.createElement("button");
+      loopButton.textContent = "วนซ้ำ: ปิด";
+
+      loopButton.addEventListener("click", () => {
+        audio.loop = !audio.loop;
+        loopButton.textContent = audio.loop ? "วนซ้ำ: เปิด" : "วนซ้ำ: ปิด";
+      });
+
       const deleteButton = document.createElement("button");
       deleteButton.textContent = "ลบ";
 
@@ -226,13 +253,16 @@
       });
 
       audio.addEventListener("ended", () => {
-        audioBox.classList.add("popOut");
-        setTimeout(() => {
-          container.removeChild(audioBox);
-        }, 240);
+        if (!audio.loop) {
+          audioBox.classList.add("popOut");
+          setTimeout(() => {
+            container.removeChild(audioBox);
+          }, 240);
+        }
       });
 
       buttonsDiv.appendChild(playPauseButton);
+      buttonsDiv.appendChild(loopButton);
       buttonsDiv.appendChild(deleteButton);
 
       audioBox.appendChild(audioTitle);
